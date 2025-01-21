@@ -11,7 +11,7 @@ __CloudFormation__
 - [] AMI with proper dependencies and  application installed
 - [] VPC and networking 
 - [] spin up EC2 with AMI
-- [] create github repo for teamwork
+- [x] create github repo for teamwork
 
 __Other__
 - [x] Architecture Diagram
