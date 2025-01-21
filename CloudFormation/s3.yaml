@@ -1,0 +1,38 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: 'Template with S3 bucket name parameters'
+
+Parameters:
+  KnowledgeBaseBucketName:
+    Type: String
+    Description: 'Name for the KnowledgeBase Documents'
+    AllowedPattern: ^[a-z0-9][a-z0-9.-]*[a-z0-9]$
+    MinLength: 3
+    MaxLength: 63
+    ConstraintDescription: 'Bucket name must be between 3 and 63 characters, start and end with a lowercase letter or number, and can contain lowercase letters, numbers, hyphens, and periods'
+  KnowledgeBaseMetaDataBucketName:
+    Type: String
+    Description: 'Name for the KnowledgeBase MetaData'
+    AllowedPattern: ^[a-z0-9][a-z0-9.-]*[a-z0-9]$
+    MinLength: 3
+    MaxLength: 63
+    ConstraintDescription: 'Bucket name must be between 3 and 63 characters, start and end with a lowercase letter or number, and can contain lowercase letters, numbers, hyphens, and periods'
+
+Resources:
+  KnowledgeBaseBucket:
+    Type: 'AWS::S3::Bucket'
+    Properties:
+      BucketName: !Ref KnowledgeBaseBucketName
+  KnowledgeBaseMetaDataBucket:
+    Type: 'AWS::S3::Bucket'
+    Properties:
+      BucketName: !Ref KnowledgeBaseMetaDataBucketName
+
+Outputs:
+  KnowledgeBaseBucketName:
+    Value: !Ref KnowledgeBaseBucketName
+  KnowledgeBaseMetaDataBucketName:
+    Value: !Ref KnowledgeBaseMetaDataBucketName
+  KnowledgeBaseBucketArn:
+    Value: !GetAtt KnowledgeBaseBucket.Arn
+  KnowledgeBaseMetaDataBucketArn:
+    Value: !GetAtt KnowledgeBaseMetaDataBucket.Arn

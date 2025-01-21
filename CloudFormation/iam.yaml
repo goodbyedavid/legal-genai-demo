@@ -1,0 +1,101 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description: A sample template for IAM roles with Bedrock knowledge base.
+
+Parameters:
+  KnowledgeBaseBucketArn:
+    Type: String
+    Description: The arn of the role for the knowledge base s3 bucket.
+  KnowledgeBaseMetaDataBucketArn:
+    Type: String
+    Description: The arn of the role for the knowledge base s3 metadata bucket.
+
+Resources:
+  BedrockKnowledgeBaseRole:
+    Type: 'AWS::IAM::Role'
+    Properties:
+      RoleName: !Sub 'bedrock-kb-milbank-role'
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: bedrock.amazonaws.com
+            Action: sts:AssumeRole
+            Condition:
+              StringEquals:
+                aws:SourceAccount: !Ref 'AWS::AccountId'
+              ArnLike:
+                aws:SourceArn: !Sub 'arn:aws:bedrock:${AWS::Region}:${AWS::AccountId}:knowledge-base/*'
+      
+      # ManagedPolicyArns:
+      #   - arn:aws:iam::aws:policy/service-role/AWSBedrockKnowledgeBaseServiceRole
+      
+      # Add additional inline policies if needed for your specific use case
+      Policies:
+        - PolicyName: BedrockKBCustomPolicy
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Sid: BedrockInvokeModelStatement
+                Effect: Allow
+                Action:
+                  - bedrock:InvokeModel
+                Resource:
+                  - !Sub 'arn:aws:bedrock:${AWS::Region}::foundation-model/anthropic.claude-3-haiku-20240307-v1:0'
+                  - !Sub 'arn:aws:bedrock:${AWS::Region}::foundation-model/amazon.titan-embed-text-v2:0'
+
+              - Sid: LambdaInvokeFunctionStatement
+                Effect: Allow
+                Action:
+                  - lambda:InvokeFunction
+                Resource:
+                  - !Sub 'arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:milbank-metadata-processing:*'
+                Condition:
+                  StringEquals:
+                    aws:ResourceAccount: !Ref 'AWS::AccountId'
+
+              - Sid: OpenSearchServerlessAPIAccessAllStatement
+                Effect: Allow
+                Action:
+                  - aoss:APIAccessAll
+                Resource:
+                  - !Sub 'arn:aws:aoss:${AWS::Region}:${AWS::AccountId}:collection/*'
+
+              - Sid: S3ListBucketStatement
+                Effect: Allow
+                Action:
+                  - s3:ListBucket
+                Resource:
+                  - !Ref KnowledgeBaseBucketArn
+                Condition:
+                  StringEquals:
+                    aws:ResourceAccount:
+                      - !Ref 'AWS::AccountId'
+
+              - Sid: S3GetObjectStatement
+                Effect: Allow
+                Action:
+                  - s3:GetObject
+                Resource:
+                  - !Ref KnowledgeBaseBucketArn
+                  - !Sub '${KnowledgeBaseMetaDataBucketArn}/*'
+                  - !Sub '${KnowledgeBaseBucketArn}/*'
+                Condition:
+                  StringEquals:
+                    aws:ResourceAccount:
+                      - !Ref 'AWS::AccountId'
+
+              - Sid: S3PutObjectStatement
+                Effect: Allow
+                Action:
+                  - s3:PutObject
+                Resource:
+                  - !Sub '${KnowledgeBaseMetaDataBucketArn}/*'
+                Condition:
+                  StringEquals:
+                    aws:ResourceAccount: !Ref 'AWS::AccountId'
+
+Outputs:
+  RoleArn:
+    Description: ARN of the created IAM role
+    Value: !GetAtt BedrockKnowledgeBaseRole.Arn
