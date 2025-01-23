@@ -1,4 +1,4 @@
-# milbank-genai-demo
+# legal-genai-demo
 
 ## Todo List
 __CloudFormation__
@@ -16,4 +16,4 @@ __Other__
 - [] End to End test
 
 
-[<img src="MilbankLegalDocumentsGenAIArchitecture.png">](/MilbankLegalDocumentsGenAIArchitecture.png)
+[<img src="LegalDocumentsGenAIArchitecture.png">](/LegalDocumentsGenAIArchitecture.png)
