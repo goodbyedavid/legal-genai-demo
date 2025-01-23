@@ -7,10 +7,8 @@ __CloudFormation__
 - [x] base iam role for bedrock knowledgebase 
 - [x] cfn nested stacks implementation
 - [x] lambda for knowledge base parser
-- [] bedrock knowledgebase creation
-- [] AMI with proper dependencies and  application installed
-- [] VPC and networking 
-- [] spin up EC2 with AMI
+- [x] bedrock knowledgebase creation
+- [x] SageMaker Domain and User profile Creation
 - [x] create github repo for teamwork
 
 __Other__

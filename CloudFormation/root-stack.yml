@@ -1,19 +1,14 @@
 AWSTemplateFormatVersion: "2010-09-09"
-Description: A sample template for Knowledge base with Amazon Opensearch Serverless vector database.
+Description: A sample root template for Knowledge base with Amazon Opensearch Serverless vector database supporting resources.
 
 Parameters:
-  KnowledgeBaseName:
+  CloudformationBucketName:
     Type: String
-    Description: The name of the knowledge base.
-  KnowledgeBaseDescription:
-    Type: String
-    Description: The description of the knowledge base.
-  DataSourceName:
-    Type: String
-    Description: The name of the data source.
-  DataSourceDescription:
-    Type: String
-    Description: The description of the data source.
+    Description: 'Name for the Cloudformation Files Bucket'
+    AllowedPattern: ^[a-z0-9][a-z0-9.-]*[a-z0-9]$
+    MinLength: 3
+    MaxLength: 63
+    ConstraintDescription: 'Bucket name must be between 3 and 63 characters, start and end with a lowercase letter or number, and can contain lowercase letters, numbers, hyphens, and periods'
   KnowledgeBaseBucketName:
     Type: String
     Description: 'Name for the KnowledgeBase Documents'
@@ -36,17 +31,21 @@ Resources:
       Parameters:
         KnowledgeBaseBucketName: !Ref KnowledgeBaseBucketName
         KnowledgeBaseMetaDataBucketName: !Ref KnowledgeBaseMetaDataBucketName
-      TemplateURL: https://milbank-demo-cfts.s3.us-east-1.amazonaws.com/s3.yaml
-      #TemplateURL: !Sub https://${SaaSBoostBucket}.s3.${AWS::Region}.${AWS::URLSuffix}/saas-boost-web.yaml
-      TimeoutInMinutes: 5
+      TemplateURL: !Sub https://${CloudformationBucketName}.s3.${AWS::Region}.amazonaws.com/s3.yaml
+      TimeoutInMinutes: 10
   IAMs:
     Type: AWS::CloudFormation::Stack
+    DependsOn: S3s
     Properties:
       Parameters:
         KnowledgeBaseBucketArn: !GetAtt S3s.Outputs.KnowledgeBaseBucketArn
-            #!Ref KnowledgeBaseBucketArn
         KnowledgeBaseMetaDataBucketArn: !GetAtt S3s.Outputs.KnowledgeBaseMetaDataBucketArn
-      TemplateURL: https://milbank-demo-cfts.s3.us-east-1.amazonaws.com/iam.yaml
-      TimeoutInMinutes: 5
-  
+      TemplateURL: !Sub https://${CloudformationBucketName}.s3.${AWS::Region}.amazonaws.com/iam.yaml
+      TimeoutInMinutes: 10
+  Lambdas:
+    Type: AWS::CloudFormation::Stack
+    DependsOn: [S3s, IAMs]
+    Properties:
+      TemplateURL: !Sub https://${CloudformationBucketName}.s3.${AWS::Region}.amazonaws.com/lambda.yaml
+      TimeoutInMinutes: 10
 

@@ -105,7 +105,7 @@ def main2(prompt):
 
 
 
-    host = 'kye63mm2ijgu494noer4.us-east-1.aoss.amazonaws.com' # cluster endpoint, for example: my-test-domain.us-east-1.aoss.amazonaws.com
+    host = '9ardgdmejj5wg766npj0.us-east-1.aoss.amazonaws.com' # cluster endpoint, for example: my-test-domain.us-east-1.aoss.amazonaws.com
     region = 'us-east-1'
     service = 'aoss'
     credentials = boto3.Session().get_credentials()
@@ -127,9 +127,9 @@ def main2(prompt):
         "_source": [
                     "company", 
                     "breach_notification_required", 
-                    "Agreement_date",
-                    # "time_entry_requirements",
-                    # "types_of_expenses", 
+                    #"Agreement_date",
+                    "time_entry_requirements",
+                    "types_of_expenses", 
                     "AMAZON_BEDROCK_TEXT",
                     "x-amz-bedrock-kb-source-uri"],
         'query': json.loads(search_query),

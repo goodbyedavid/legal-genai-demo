@@ -13,7 +13,7 @@ Resources:
   BedrockKnowledgeBaseRole:
     Type: 'AWS::IAM::Role'
     Properties:
-      RoleName: !Sub 'bedrock-kb-milbank-role'
+      RoleName: !Sub 'bedrock-execution-role-for-kb-milbank'
       AssumeRolePolicyDocument:
         Version: '2012-10-17'
         Statement:
@@ -26,9 +26,6 @@ Resources:
                 aws:SourceAccount: !Ref 'AWS::AccountId'
               ArnLike:
                 aws:SourceArn: !Sub 'arn:aws:bedrock:${AWS::Region}:${AWS::AccountId}:knowledge-base/*'
-      
-      # ManagedPolicyArns:
-      #   - arn:aws:iam::aws:policy/service-role/AWSBedrockKnowledgeBaseServiceRole
       
       # Add additional inline policies if needed for your specific use case
       Policies:
@@ -49,7 +46,7 @@ Resources:
                 Action:
                   - lambda:InvokeFunction
                 Resource:
-                  - !Sub 'arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:milbank-metadata-processing:*'
+                  - !Sub 'arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:milbank-demo-metadata-processing:*'
                 Condition:
                   StringEquals:
                     aws:ResourceAccount: !Ref 'AWS::AccountId'

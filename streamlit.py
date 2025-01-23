@@ -53,10 +53,8 @@ for message in st.session_state.messages:
 # Function to call API
 def call_api(prompt):
     output= main2(prompt)
-    print("vineet")
     response = output['hits']['hits']
-    print (response)
-    print("vineete")
+    print(response)
     return response
 
 
@@ -85,9 +83,9 @@ def format_response(response):
         table_data = [
             ["Field", "Value"],
             ["Source URI", source['x-amz-bedrock-kb-source-uri']],
-            # ["Time Entry Requirements", source['time_entry_requirements']],
-            ["Agreement Date", source['Agreement_date']],
-            # ["Types of Expenses", source['types_of_expenses']],
+            ["Time Entry Requirements", source['time_entry_requirements']],
+            #["Agreement Date", source['Agreement_date']],
+            ["Types of Expenses", source['types_of_expenses']],
             ["Breach Notification Required", source['breach_notification_required']]
          
         ]
