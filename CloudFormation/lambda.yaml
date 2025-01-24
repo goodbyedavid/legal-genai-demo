@@ -6,7 +6,7 @@ Resources:
     Type: 'AWS::Lambda::Function'
     Properties:
       FunctionName: milbank-demo-metadata-processing
-      Handler: lambda_function.handler
+      Handler: index.handler
       Runtime: python3.13
       Role: !GetAtt LambdaFunctionRole.Arn
       MemorySize: 1024
@@ -21,7 +21,7 @@ Resources:
           logger = logging.getLogger()
           logger.setLevel(logging.INFO)
 
-          def lambda_handler(event, context):
+          def handler(event, context):
               print("EVENT:", event)
               # Extract necessary information from the event
               bucket_name = event['bucketName']
